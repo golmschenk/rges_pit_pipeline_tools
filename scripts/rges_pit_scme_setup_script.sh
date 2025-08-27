@@ -19,4 +19,5 @@ spack load miniforge3
 conda activate default_env
 # <<< RGES-PIT setup end <<<
 EOF
+  source "${HOME}/.bashrc"
 fi
