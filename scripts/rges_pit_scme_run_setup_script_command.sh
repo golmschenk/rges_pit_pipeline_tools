@@ -1,0 +1,1 @@
+curl -fsSL https://raw.githubusercontent.com/golmschenk/rges_pit_pipeline_tools/refs/heads/main/scripts/rges_pit_scme_setup_script.sh | bash
