@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Starting SMCE setup script."
+echo "Running SMCE setup script. This will take about a minute."
 if ! grep -qF '# >>> RGES-PIT setup start >>>' "${HOME}/.bashrc"; then
   mkdir -p /shared/"${USER}"/.conda
   ln -s /shared/"${USER}"/.conda "${HOME}"/.conda
