@@ -17,6 +17,7 @@ dependencies = [
   'furo',
   'sphinx',
   'myst-parser',
+  'sphinx-copybutton',
 ]
 
 [project.urls]
