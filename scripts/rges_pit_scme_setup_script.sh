@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if ! grep -qF '# >>> RGES-PIT setup start >>>' "${HOME}/.bashrc"; then
-  ln -s /shared/$USER/.conda ~/.conda
+  mkdir -p /shared/"${USER}"/.conda
+  ln -s /shared/"${USER}"/.conda "${HOME}"/.conda
   source /shared/spack/share/spack/setup-env.sh
   spack load miniforge3
   conda init
