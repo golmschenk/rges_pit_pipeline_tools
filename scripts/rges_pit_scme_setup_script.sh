@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! grep -qF '# >>> Greg Olmschenk setup start >>>' "${HOME}/.bashrc"; then
   ln -s /shared/$USER/.conda ~/.conda
   source /shared/spack/share/spack/setup-env.sh
