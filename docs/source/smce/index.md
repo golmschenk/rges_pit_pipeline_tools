@@ -12,4 +12,5 @@ The SMCE is connected to, but distinct from, the Roman Research Nexus. See [the 
 
 platform_overview
 first_time_setup
+basic_jobs
 ```
