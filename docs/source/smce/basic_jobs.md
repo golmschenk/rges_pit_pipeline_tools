@@ -37,7 +37,7 @@ Put the above script into a file called `minimal_job_example.bash`, and then run
 ```sh
 sbatch minimal_job_example.bash
 ```
-This will add the job to the SLURM job queue and print out the job ID number. While in normal HPC centers you would need to wait until hardware becomes available for your job to run, the SMCE is cloud-based, and will expand based on the need, so your job should start shortly. You can list the running jobs and jobs waiting to start with
+This will add the job to the SLURM job queue and print out the job ID number. While in normal HPC centers you would need to wait until hardware becomes available for your job to run, the SMCE is cloud-based and will expand based on the need, so your job should start shortly. You can list the running jobs and jobs waiting to start with
 ```sh
 squeue --long
 ```
@@ -51,3 +51,67 @@ Thu Aug 28 00:04:37 2025
 You may see your job in the `CONFIGUR` state. As of 2025-08-27, it takes the SMCE about 5 minutes to prepare the nodes for your job. Other HPC clusters I've used (on hardware not in the cloud) would start running in seconds. This 5 minute delay may or may not change in the future.
 ```
 The stdout and stderr of your job will (by default) be written to a file named `slurm-<your_job_id>.out`. Here you will see the numbers printing from 1 to 60.
+
+
+## Running many independent tasks
+
+There are several ways to run many processes in SLURM. The most common are
+1. Use a wrapper script that calls the job script with different settings.
+2. Use the [job array directive](https://rcpedia.stanford.edu/_user_guide/job_arrays/) to make several similar jobs with the sbatch script.
+3. Run a single job that internally distributes the processes across the multiple cores/nodes.
+
+Depending on your specific purpose, one of these options might be better than the others. However, the wrapper script is flexible enough for and avoids the need to learn SLURM-specific functionality. It may not provide quite as compact of a solution, but it will be more understandable for most users. Below are two examples of the wrapper script method, one using Bash as the wrapper and the other using Python. Both methods will use the same sbatch script, so we will look at that first. First, create the file `wrapped_job_example.bash` containing
+```bash
+#!/bin/bash
+
+#SBATCH --partition=roman-c5n18xlarge-od
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=5G
+#SBATCH --time=00:01:00
+
+echo "${1}"
+```
+This script simply echos the passed in argument. Of course, we could do anything with this argument, such as pass it to another program. One use case would be if you expect the argument passed is a path to a file to process. Note, as opposed to the minimal exmaple above, we are not setting the job name. We'll set this directly when calling `sbatch` so that we can name each job based on the passed argument. Next, we'll write the wrapper scripts, which will each do the same thing, but one in Bash and one in Python.
+
+### Bash version
+
+Create a Bash script called `wrapper_job_example.bash` with containing
+```bash
+#!/bin/bash
+
+light_curve_paths=(
+    "light_curve0.asdf"
+    "light_curve1.asdf"
+    "light_curve2.asdf"
+)
+
+for light_curve_path in "${light_curve_paths[@]}"
+do
+    sbatch wrapped_job_example.bash "${light_curve_path}" --job-name="${light_curve_path}"
+done
+```
+This creates a job for each of the three light curve paths give. We're passing the light curve to be used in the sbatch script. We're also setting the job name from the `sbatch` call by passing `--job-name`. This is useful to make sure each job is named differently. This method of setting the `sbatch` configuration directly during the call can be used for any of the configuration settings. If you actually have a list of `.asdf` files available, in the wrapper batch script, you can create your list of light curve paths with `light_curve_paths=(*.asdf)` instead so you don't need to specify each file manually.
+
+### Python version
+
+Bash is ok simple scripts, but as soon as any additional complexity is needed, using a language like Python makes things much easier. Create a Python script called `wrapper_job_example.py` containing
+```python
+import subprocess
+from pathlib import Path
+
+light_curve_paths = [
+    Path('light_curve0.asdf'),
+    Path('light_curve1.asdf'),
+    Path('light_curve2.asdf'),
+]
+
+for light_curve_path in light_curve_paths:
+    subprocess.run([
+        'sbatch',
+        'wrapped_job_example.bash',
+        light_curve_path,
+        f'--job-name={light_curve_path}'
+    ])
+```
+This creates a job for each of the three light curve paths give. We're passing the light curve to be used in the sbatch script. We're also setting the job name from the `sbatch` call by passing `--job-name`. This is useful to make sure each job is named differently. This method of setting the `sbatch` configuration directly during the call can be used for any of the configuration settings. If you actually have a list of `.asdf` files available, in the wrapper batch script, you can create your list of light curve paths with `light_curve_paths=Path('.').glob('*.asdf')` instead so you don't need to specify each file manually.
