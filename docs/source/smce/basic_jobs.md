@@ -53,14 +53,14 @@ You may see your job in the `CONFIGUR` state. As of 2025-08-27, it takes the SMC
 The stdout and stderr of your job will (by default) be written to a file named `slurm-<your_job_id>.out`. Here you will see the numbers printing from 1 to 60.
 
 
-## Running many independent tasks
+## Running many independent jobs
 
-There are several ways to run many processes in SLURM. The most common are
+There are several ways to run many independent jobs in SLURM. The most common are
 1. Use a wrapper script that calls the job script with different settings.
-2. Use the [job array directive](https://rcpedia.stanford.edu/_user_guide/job_arrays/) to make several similar jobs with the sbatch script.
+2. Use the [job array directive](https://rcpedia.stanford.edu/_user_guide/job_arrays/) to make several similar jobs with a single sbatch script.
 3. Run a single job that internally distributes the processes across the multiple cores/nodes.
 
-Depending on your specific purpose, one of these options might be better than the others. However, the wrapper script is flexible enough for and avoids the need to learn SLURM-specific functionality. It may not provide quite as compact of a solution, but it will be more understandable for most users. Below are two examples of the wrapper script method, one using Bash as the wrapper and the other using Python. Both methods will use the same sbatch script, so we will look at that first. First, create the file `wrapped_job_example.bash` containing
+Depending on your specific purpose, one of these options might be better than the others. However, the wrapper script is flexible enough for most uses and avoids the need to learn SLURM-specific functionality. It may not provide the most compact of a solution (in terms of script length), but it will be more understandable for most users. Below are two examples of the wrapper script method, one using Bash as the wrapper and the other using Python. Both methods will use the same sbatch script, so we will look at that first. First, create the file `wrapped_job_example.bash` containing
 ```bash
 #!/bin/bash
 
@@ -88,10 +88,12 @@ light_curve_paths=(
 
 for light_curve_path in "${light_curve_paths[@]}"
 do
-    sbatch wrapped_job_example.bash "${light_curve_path}" --job-name="${light_curve_path}"
+    sbatch --job-name="${light_curve_path}" wrapped_job_example.bash "${light_curve_path}"
 done
 ```
 This creates a job for each of the three light curve paths give. We're passing the light curve to be used in the sbatch script. We're also setting the job name from the `sbatch` call by passing `--job-name`. This is useful to make sure each job is named differently. This method of setting the `sbatch` configuration directly during the call can be used for any of the configuration settings. If you actually have a list of `.asdf` files available, in the wrapper batch script, you can create your list of light curve paths with `light_curve_paths=(*.asdf)` instead so you don't need to specify each file manually.
+
+The wrapper script can then be called using `bash wrapper_job_example.bash`.
 
 ### Python version
 
@@ -109,9 +111,11 @@ light_curve_paths = [
 for light_curve_path in light_curve_paths:
     subprocess.run([
         'sbatch',
+        f'--job-name={light_curve_path}'
         'wrapped_job_example.bash',
         light_curve_path,
-        f'--job-name={light_curve_path}'
     ])
 ```
 This creates a job for each of the three light curve paths give. We're passing the light curve to be used in the sbatch script. We're also setting the job name from the `sbatch` call by passing `--job-name`. This is useful to make sure each job is named differently. This method of setting the `sbatch` configuration directly during the call can be used for any of the configuration settings. If you actually have a list of `.asdf` files available, in the wrapper batch script, you can create your list of light curve paths with `light_curve_paths=Path('.').glob('*.asdf')` instead so you don't need to specify each file manually.
+
+The wrapper script can then be called using `python wrapper_job_example.py`.
