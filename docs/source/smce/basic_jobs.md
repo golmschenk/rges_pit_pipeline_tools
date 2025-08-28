@@ -6,7 +6,7 @@ hour to test things. But don't request 100 nodes for 10 days unless you know wha
 large, expensive nodes.
 ```
 
-As noted in [the platform overview documentation](./platform_overview.md), the SMCE acts as a HPC with SLURM as the
+As noted in [the platform overview documentation](./platform_overview.md), the SMCE acts as an HPC with SLURM as the
 workload manager. You request a job with some specified computing resources, SLURM will spin-up nodes that meet those
 requirements, and then run your job on those nodes.
 
@@ -31,7 +31,7 @@ do
     sleep 1
 done
 ```
-`--job-name` is the name your job will have in SLURM. `--partition` is the partition you're requesting resources from. Each node that's available to use is grouped into one or more partitions. On the SMCE, specify the partition basically means specifying a specific type of node. `--ntasks` is the number of tasks. This is the number of copies of your script that get started. For now we're just creating one, but when you have multiple things that need to work in parallel (either independently or communicating with one another) you can increase this number (more on this in later examples). `--cpus-per-task` is the number of CPU cores we're requesting for each task. `--mem-per-cpu` is the memory per core we're requesting. `--mem-per-cpu=5G` is requesting 5GB of memory per cpu core. `--time` is the maximum wall-time job will be allowed to run for before SLURM will shut it down, regardless of if it has finished. The wall-time is in the format of `hours:minutes:seconds` with `00:02:00` being 2 minutes. You can also use `days-hours:minutes:seconds`. So `1-00:00:00` would request 1 day of time. [There are an enormous number of other possible parameters that can be specified](https://slurm.schedmd.com/sbatch.html) including different ways of specifying the above values (e.g., total memory instead of memory per core).
+`--job-name` is the name your job will have in SLURM. `--partition` is the partition you're requesting resources from. Each node that's available to use is grouped into one or more partitions. On the SMCE, specify the partition basically means specifying a specific type of node. `--ntasks` is the number of tasks. This is the number of copies of your script that get started. For now we're just creating one, but when you have multiple things that need to work in parallel (either independently or communicating with one another) you can increase this number (more on this in later examples). `--cpus-per-task` is the number of CPU cores we're requesting for each task. `--mem-per-cpu` is the memory per core we're requesting. `--mem-per-cpu=5G` is requesting 5GB of memory per cpu core. Note, we're not using the entire node here. If we only use a portion of the available node's cores and memory, other jobs (including our own) can use the remainder of the node. `--time` is the maximum wall-time job will be allowed to run for before SLURM will shut it down, regardless of if it has finished. The wall-time is in the format of `hours:minutes:seconds` with `00:02:00` being 2 minutes. You can also use `days-hours:minutes:seconds`. So `1-00:00:00` would request 1 day of time. [There are an enormous number of other possible parameters that can be specified](https://slurm.schedmd.com/sbatch.html) including different ways of specifying the above values (e.g., total memory instead of memory per core).
 
 Put the above script into a file called `minimal_job_example.bash`, and then run it using
 ```sh
@@ -111,7 +111,7 @@ light_curve_paths = [
 for light_curve_path in light_curve_paths:
     subprocess.run([
         'sbatch',
-        f'--job-name={light_curve_path}'
+        f'--job-name={light_curve_path}',
         'wrapped_job_example.bash',
         light_curve_path,
     ])
