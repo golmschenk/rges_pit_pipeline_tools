@@ -48,7 +48,7 @@ Thu Aug 28 00:04:37 2025
       2089 roman-c5n minimal_ golmsche  RUNNING       0:05      2:00      1 roman-c5n18xlarge-od-dy-c5n18xlarge-1
 ```
 ```{note}
-You may see your job in the `CONFIGUR` state. As of 2025-08-27, it takes the SMCE about 5 minutes to prepare the nodes for your job. Other HPC clusters I've used (on hardware not in the cloud) would start running in seconds. This 5 minute delay may or may not change in the future.
+You may see your job in the `CONFIGUR` state. It takes the SMCE about 5 minutes to spin up (configure) new nodes. If there's a running node your job can run on, the job will start almost immediately.
 ```
 The stdout and stderr of your job will (by default) be written to a file named `slurm-<your_job_id>.out`. Here you will see the numbers printing from 1 to 60.
 
