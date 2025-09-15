@@ -1,9 +1,13 @@
 import datetime
 
 project = 'RGES-PIT Pipeline Tools'
-project_copyright = f'2025 - {datetime.datetime.now().year}, Greg Olmschenk'
+now_year = datetime.datetime.now().year
+project_start_year = 2025
 author = 'Greg Olmschenk'
+
 html_title = "RGES-PIT Pipeline Tools"
+project_copyright = (f'{f"{project_start_year} - " if project_start_year != project_start_year else ""}{now_year}, '
+                     f'{author}')
 
 
 extensions = [
