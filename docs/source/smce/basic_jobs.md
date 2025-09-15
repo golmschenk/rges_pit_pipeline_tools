@@ -97,7 +97,7 @@ The wrapper script can then be called using `bash wrapper_job_example.bash`.
 
 ### Python version
 
-Bash is ok simple scripts, but as soon as any additional complexity is needed, using a language like Python makes things much easier. Create a Python script called `wrapper_job_example.py` containing
+Bash is ok for simple scripts, but as soon as any additional complexity is needed, using a language like Python makes things much easier. Create a Python script called `wrapper_job_example.py` containing
 ```python
 import subprocess
 from pathlib import Path
