@@ -23,3 +23,4 @@ source_suffix = [".rst", ".md"]
 html_theme = 'furo'
 html_static_path = ['_static']
 html_show_sphinx = False
+html_show_furo = False
