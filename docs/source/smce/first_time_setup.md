@@ -22,15 +22,3 @@ Now, you should be able to SSH into the SMCE with
 ```
 ssh smce-east1
 ```
-
-## Setting up your environment
-
-```{warning}
-The SMCE Spack Conda configuration currently has a bug (as of 2025-09-01), and this configuration script sets up that Conda environment to activate on connecting to the SMCE. Until this bug in the SMCE Spack Conda configuration is corrected, use this setup at your own risk. 
-```
-
-The first time you log into the server, run the below command to set up your environment. This command will do several things, including ensuring that you have a working Conda environment containing a version of Python that is active whenever you log in.
-```sh
-curl -fsSL https://raw.githubusercontent.com/golmschenk/rges_pit_pipeline_tools/refs/heads/main/scripts/rges_pit_scme_setup_script.sh | bash
-```
-After running this script, either restart the terminal session or run `source ~/.bashrc`.
