@@ -6,7 +6,7 @@ project_start_year = 2025
 author = 'Greg Olmschenk'
 
 html_title = "RGES-PIT Pipeline Tools"
-project_copyright = (f'{f"{project_start_year} - " if project_start_year != project_start_year else ""}{now_year}, '
+project_copyright = (f'{f"{project_start_year} - " if project_start_year != now_year else ""}{now_year}, '
                      f'{author}')
 
 
